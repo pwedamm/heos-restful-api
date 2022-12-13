@@ -7,3 +7,7 @@ type Heos struct {
 	conn net.Conn
 	host string
 }
+
+func (heos *Heos) GetConnection() net.Conn {
+	return heos.conn
+}

@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net"
 )
 
@@ -38,7 +39,9 @@ func (heos *Heos) Disconnect() error {
 // SendCmdToHeosSpeaker sends given command with parameters to the speaker
 func (heos *Heos) SendCmdToHeosSpeaker(cmd Command, params map[string]string) (string, error) {
 
-	_, err := fmt.Fprintf(heos.conn, "heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, params)
+	logrus.Info("sending: "+"heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
+
+	_, err := fmt.Fprintf(heos.conn, "heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
 	if err != nil {
 		return "", err
 	}
@@ -56,4 +59,20 @@ func (heos *Heos) SendCmdToHeosSpeaker(cmd Command, params map[string]string) (s
 	event := bytes.TrimRight([]byte(scanner.Text()), "\x00")
 
 	return string(event), nil
+}
+
+func paramsToStr(params map[string]string) string {
+	var str string
+
+	first := true
+	for k, v := range params {
+		if first {
+			first = false
+			str = fmt.Sprintf("%s=%s", k, v)
+			continue
+		}
+		str += fmt.Sprintf("&%s=%s", k, v)
+	}
+
+	return str
 }
