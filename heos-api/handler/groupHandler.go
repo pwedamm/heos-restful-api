@@ -96,7 +96,7 @@ func sendGroupGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Comma
 
 	json.Unmarshal(response, &msg)
 
-	log.Infof("got answer ERR %s", response)
+	log.Infof("logging raw answer %s", response)
 	json.NewEncoder(w).Encode(msg)
 
 }

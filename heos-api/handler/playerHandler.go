@@ -249,7 +249,7 @@ func sendPlayerGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Comm
 
 	json.Unmarshal(response, &msg)
 
-	log.Infof("got answer ERR %s", response)
+	log.Infof("logging raw answer %s", response)
 	json.NewEncoder(w).Encode(msg)
 
 }
