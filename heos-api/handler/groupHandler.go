@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"heos-restful-api/heos-api/groups"
 	"heos-restful-api/heos-api/internal"
 	"net/http"
 )
@@ -16,7 +17,7 @@ func GetGroupsHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "get_groups",
 	}
-	sendGroupMessage(w, cmd, params)
+	sendGroupGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetGroupInfoHandler(w http.ResponseWriter, req *http.Request) {
@@ -29,7 +30,7 @@ func GetGroupInfoHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "get_group_info",
 	}
-	sendGroupMessage(w, cmd, params)
+	sendGroupGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
@@ -42,7 +43,7 @@ func GetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "get_volume",
 	}
-	sendGroupMessage(w, cmd, params)
+	sendGroupGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func SetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
@@ -56,7 +57,7 @@ func SetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "set_volume",
 	}
-	sendGroupMessage(w, cmd, params)
+	sendGroupGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // SetGroupHandler pid => List of comma separated player_id's where each player id is returned by 'get_players' or 'get_groups' command; first
@@ -72,10 +73,11 @@ func SetGroupHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "set_group",
 	}
-	sendGroupMessage(w, cmd, params)
+	sendGroupGroupMessageToHeosSystem(w, cmd, params)
 }
 
-func sendGroupMessage(w http.ResponseWriter, cmd internal.Command, params map[string]string) {
+// sendPlayerGroupMessageToHeosSystem takes input params from handler, writes message to heos and write the result to http.response
+func sendGroupGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Command, params map[string]string) {
 	heos, err := GetConnectedHeos()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -90,6 +92,11 @@ func sendGroupMessage(w http.ResponseWriter, cmd internal.Command, params map[st
 		return
 	}
 
-	log.Infof("got answer %s", response)
-	json.NewEncoder(w).Encode(response)
+	var msg groups.HeosGroupAnswer
+
+	json.Unmarshal(response, &msg)
+
+	log.Infof("got answer ERR %s", response)
+	json.NewEncoder(w).Encode(msg)
+
 }

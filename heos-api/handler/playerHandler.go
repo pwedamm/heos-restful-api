@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"heos-restful-api/heos-api/groups"
 	"heos-restful-api/heos-api/internal"
 	"net/http"
 )
@@ -16,7 +17,7 @@ func GetPlayerHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_players",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetPlayerInfoHandler(w http.ResponseWriter, req *http.Request) {
@@ -29,7 +30,7 @@ func GetPlayerInfoHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_player_info",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
@@ -42,7 +43,7 @@ func GetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_play_state",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // SetPlayStateHandler accepts play, pause and stop as params for state
@@ -57,7 +58,7 @@ func SetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_play_state",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetNowPlayingMediaHandler(w http.ResponseWriter, req *http.Request) {
@@ -70,7 +71,7 @@ func GetNowPlayingMediaHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_now_playing_media",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetVolumeHandler(w http.ResponseWriter, req *http.Request) {
@@ -83,7 +84,7 @@ func GetVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_volume",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // SetVolumeHandler level 0 to 100
@@ -98,7 +99,7 @@ func SetVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_volume",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // VolumeUpHandler level 0 to 10
@@ -113,7 +114,7 @@ func VolumeUpHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "volume_up",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // VolumeDownHandler level 0 to 10
@@ -128,7 +129,7 @@ func VolumeDownHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "volume_down",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // GetMuteHandler level 0 to 10
@@ -142,7 +143,7 @@ func GetMuteHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_mute",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // SetMuteHandler state => on / off
@@ -157,7 +158,7 @@ func SetMuteHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_mute",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func ToggleMuteHandler(w http.ResponseWriter, req *http.Request) {
@@ -170,7 +171,7 @@ func ToggleMuteHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "toggle_mute",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func GetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
@@ -183,7 +184,7 @@ func GetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_play_mode",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 // SetPlayModeHandler repeat => on_all, on_one, off || shuffle => on, off
@@ -199,7 +200,7 @@ func SetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_play_mode",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func PlayNextHandler(w http.ResponseWriter, req *http.Request) {
@@ -212,7 +213,7 @@ func PlayNextHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "play_next",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func PlayPreviousHandler(w http.ResponseWriter, req *http.Request) {
@@ -225,10 +226,11 @@ func PlayPreviousHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "play_previous",
 	}
-	sendPlayerMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
-func sendPlayerMessage(w http.ResponseWriter, cmd internal.Command, params map[string]string) {
+// sendPlayerGroupMessageToHeosSystem takes input params from handler, writes message to heos and write the result to http.response
+func sendPlayerGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Command, params map[string]string) {
 	heos, err := GetConnectedHeos()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -243,6 +245,11 @@ func sendPlayerMessage(w http.ResponseWriter, cmd internal.Command, params map[s
 		return
 	}
 
-	log.Infof("got answer %s", response)
-	json.NewEncoder(w).Encode(response)
+	var msg groups.HeosPlayerAnswer
+
+	json.Unmarshal(response, &msg)
+
+	log.Infof("got answer ERR %s", response)
+	json.NewEncoder(w).Encode(msg)
+
 }

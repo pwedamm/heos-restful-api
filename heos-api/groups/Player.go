@@ -1,16 +1,19 @@
 package groups
 
-var PlayerGroup = "player"
-var GetPlayers = "get_players"
+type HeosPlayerAnswer struct {
+	Heos    Heos     `json:"heos"`
+	Payload []Player `json:"payload"`
+}
 
 type Player struct {
-	Gid     string `json:"gid"`
-	Ip      string `json:"ip"`
-	Lineout string `json:"lineout"`
-	Model   string `json:"model"`
 	Name    string `json:"name"`
+	Pid     int    `json:"pid"`
+	Gid     int    `json:"gid"`
+	Ip      string `json:"ip"`
+	Lineout int    `json:"lineout"`
+	Model   string `json:"model"`
 	Network string `json:"network"`
-	Pid     string `json:"pid"`
 	Serial  string `json:"serial"`
 	Version string `json:"version"`
+	Role    string `json:"role"`
 }

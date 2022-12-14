@@ -37,28 +37,27 @@ func (heos *Heos) Disconnect() error {
 }
 
 // SendCmdToHeosSpeaker sends given command with parameters to the speaker
-func (heos *Heos) SendCmdToHeosSpeaker(cmd Command, params map[string]string) (string, error) {
+func (heos *Heos) SendCmdToHeosSpeaker(cmd Command, params map[string]string) ([]byte, error) {
 
 	logrus.Info("sending: "+"heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
 
 	_, err := fmt.Fprintf(heos.conn, "heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	scanner := bufio.NewScanner(heos.conn)
 
 	if !scanner.Scan() {
-		return "", fmt.Errorf("no response")
+		return nil, fmt.Errorf("no response")
 	}
 
 	if err := scanner.Err(); err != nil {
-		return "", errors.New("Error in response: " + err.Error())
+		return nil, errors.New("Error in response: " + err.Error())
 	}
 
 	event := bytes.TrimRight([]byte(scanner.Text()), "\x00")
-
-	return string(event), nil
+	return event, nil
 }
 
 func paramsToStr(params map[string]string) string {

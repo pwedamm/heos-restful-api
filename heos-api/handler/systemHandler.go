@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"heos-restful-api/heos-api/internal"
 	"net/http"
@@ -16,7 +14,7 @@ func AccountCheckHandler(w http.ResponseWriter, req *http.Request) {
 		Command: "check_account",
 	}
 
-	sendSystemMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func AccountSignInHandler(w http.ResponseWriter, req *http.Request) {
@@ -30,7 +28,7 @@ func AccountSignInHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "system",
 		Command: "sign_in",
 	}
-	sendSystemMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func AccountSignOutHandler(w http.ResponseWriter, req *http.Request) {
@@ -41,7 +39,7 @@ func AccountSignOutHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "system",
 		Command: "sign_out",
 	}
-	sendSystemMessage(w, cmd, params)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
 
 func HeartBeattHandler(w http.ResponseWriter, req *http.Request) {
@@ -52,24 +50,5 @@ func HeartBeattHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "system",
 		Command: "heart_beat",
 	}
-	sendSystemMessage(w, cmd, params)
-}
-
-func sendSystemMessage(w http.ResponseWriter, cmd internal.Command, params map[string]string) {
-	heos, err := GetConnectedHeos()
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "No connected devices. Error %v:", err.Error())
-		return
-	}
-
-	response, err := heos.SendCmdToHeosSpeaker(cmd, params)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Error while communicating with heos %v", err.Error())
-		return
-	}
-
-	log.Infof("got answer %s", response)
-	json.NewEncoder(w).Encode(response)
+	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }
