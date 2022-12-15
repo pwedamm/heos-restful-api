@@ -1,5 +1,9 @@
 package groups
 
+type Response interface {
+	getCommand() string
+}
+
 type HeosPlayerAnswer struct {
 	Heos    Heos     `json:"heos"`
 	Payload []Player `json:"payload"`
@@ -16,4 +20,8 @@ type Player struct {
 	Serial  string `json:"serial"`
 	Version string `json:"version"`
 	Role    string `json:"role"`
+}
+
+func (a HeosPlayerAnswer) getCommand() string {
+	return a.Heos.Command
 }
