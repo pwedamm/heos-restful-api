@@ -21,12 +21,12 @@ func PlayPresetHandler(w http.ResponseWriter, req *http.Request) {
 		Command: "play_preset",
 	}
 
-	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params);
+	res := sendMessageToHeosSystem(w, cmd, params)
 	if res != nil {
 
 		json.Unmarshal(res, &playPresetHandlerResponse)
 		json.NewEncoder(w).Encode(playPresetHandlerResponse)
 	}
 
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	sendMessageToHeosSystem(w, cmd, params)
 }

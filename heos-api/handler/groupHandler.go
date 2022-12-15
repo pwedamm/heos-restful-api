@@ -2,28 +2,32 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"heos-restful-api/heos-api/groups"
 	"heos-restful-api/heos-api/internal"
-	"heos-restful-api/heos-api/logger"
 	"net/http"
 )
 
 func GetGroupsHandler(w http.ResponseWriter, req *http.Request) {
 
 	params := make(map[string]string)
-
+	var setGroupResponse groups.HeosGroupAnswer
 	cmd := internal.Command{
 		Group:   "group",
 		Command: "get_groups",
 	}
-	sendGroupGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &setGroupResponse)
+		json.NewEncoder(w).Encode(setGroupResponse)
+	}
 }
 
 func GetGroupInfoHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var setGroupResponse groups.HeosGroupAnswer
 	params := make(map[string]string)
 	params["gid"] = vars["gid"]
 
@@ -31,12 +35,18 @@ func GetGroupInfoHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "get_group_info",
 	}
-	sendGroupGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &setGroupResponse)
+		json.NewEncoder(w).Encode(setGroupResponse)
+	}
 }
 
 func GetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var setGroupResponse groups.HeosGroupAnswer
 	params := make(map[string]string)
 	params["gid"] = vars["gid"]
 
@@ -44,12 +54,18 @@ func GetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "get_volume",
 	}
-	sendGroupGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &setGroupResponse)
+		json.NewEncoder(w).Encode(setGroupResponse)
+	}
 }
 
 func SetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var setGroupResponse groups.HeosGroupAnswer
 	params := make(map[string]string)
 	params["gid"] = vars["gid"]
 	params["level"] = vars["level"]
@@ -58,7 +74,12 @@ func SetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "set_volume",
 	}
-	sendGroupGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &setGroupResponse)
+		json.NewEncoder(w).Encode(setGroupResponse)
+	}
 }
 
 // SetGroupHandler pid => List of comma separated player_id's where each player id is returned by 'get_players' or 'get_groups' command; first
@@ -67,6 +88,7 @@ func SetGroupVolumeHandler(w http.ResponseWriter, req *http.Request) {
 func SetGroupHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var setGroupResponse groups.HeosGroupAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["p_ids"]
 
@@ -74,30 +96,11 @@ func SetGroupHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "group",
 		Command: "set_group",
 	}
-	sendGroupGroupMessageToHeosSystem(w, cmd, params)
-}
 
-// sendPlayerGroupMessageToHeosSystem takes input params from handler, writes message to heos and write the result to http.response
-func sendGroupGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Command, params map[string]string) {
-	heos, err := GetConnectedHeos()
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "No connected devices. Error %v:", err.Error())
-		return
+	res := sendMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &setGroupResponse)
+		json.NewEncoder(w).Encode(setGroupResponse)
 	}
-
-	response, err := heos.SendCmdToHeosSpeaker(cmd, params)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Error while communicating with heos %v", err.Error())
-		return
-	}
-
-	var msg groups.HeosGroupAnswer
-
-	json.Unmarshal(response, &msg)
-
-	logger.HeosLogger.Infof("logging raw answer %s", response)
-	json.NewEncoder(w).Encode(msg)
-
 }

@@ -62,3 +62,22 @@ func GetConnectedHeos() (internal.Heos, error) {
 func SetDefaultHeosIp(heosIp string) {
 	defaultIp = heosIp
 }
+
+// sendMessageToHeosSystem takes input params from handler, writes message to heos and write the result to http.response
+func sendMessageToHeosSystem(w http.ResponseWriter, cmd internal.Command, params map[string]string) []byte {
+	heos, err := GetConnectedHeos()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "No connected devices. Error %v:", err.Error())
+		return nil
+	}
+
+	response, err := heos.SendCmdToHeosSpeaker(cmd, params)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Error while communicating with heos %v", err.Error())
+		return nil
+	}
+	logger.HeosLogger.Debugf("logging raw answer %s", response)
+	return response
+}

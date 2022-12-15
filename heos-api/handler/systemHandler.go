@@ -17,7 +17,7 @@ func AccountCheckHandler(w http.ResponseWriter, req *http.Request) {
 		Command: "check_account",
 	}
 
-	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
 	if res != nil {
 
 		json.Unmarshal(res, &playPreviousResponse)
@@ -37,7 +37,7 @@ func AccountSignInHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "system",
 		Command: "sign_in",
 	}
-	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
 	if res != nil {
 
 		json.Unmarshal(res, &playPreviousResponse)
@@ -53,7 +53,7 @@ func AccountSignOutHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "system",
 		Command: "sign_out",
 	}
-	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
 	if res != nil {
 
 		json.Unmarshal(res, &playPreviousResponse)
@@ -69,7 +69,7 @@ func HeartBeattHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "system",
 		Command: "heart_beat",
 	}
-	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	res := sendMessageToHeosSystem(w, cmd, params)
 	if res != nil {
 
 		json.Unmarshal(res, &playPreviousResponse)
