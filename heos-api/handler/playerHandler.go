@@ -6,23 +6,31 @@ import (
 	"github.com/gorilla/mux"
 	"heos-restful-api/heos-api/groups"
 	"heos-restful-api/heos-api/internal"
+	"heos-restful-api/heos-api/logger"
 	"net/http"
 )
 
 func GetPlayerHandler(w http.ResponseWriter, req *http.Request) {
 
 	params := make(map[string]string)
+	var playPreviousResponse groups.HeosPlayerAnswer
 
 	cmd := internal.Command{
 		Group:   "player",
 		Command: "get_players",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func GetPlayerInfoHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -30,12 +38,18 @@ func GetPlayerInfoHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_player_info",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func GetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -43,13 +57,19 @@ func GetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_play_state",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // SetPlayStateHandler accepts play, pause and stop as params for state
 func SetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 	params["state"] = vars["state"]
@@ -58,12 +78,18 @@ func SetPlayStateHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_play_state",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func GetNowPlayingMediaHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -71,12 +97,18 @@ func GetNowPlayingMediaHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_now_playing_media",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func GetVolumeHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -84,13 +116,19 @@ func GetVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_volume",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // SetVolumeHandler level 0 to 100
 func SetVolumeHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 	params["level"] = vars["level"]
@@ -99,13 +137,19 @@ func SetVolumeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_volume",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // VolumeUpHandler level 0 to 10
 func VolumeUpHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 	params["step_level"] = vars["step_level"]
@@ -114,13 +158,19 @@ func VolumeUpHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "volume_up",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // VolumeDownHandler level 0 to 10
 func VolumeDownHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 	params["step_level"] = vars["step_level"]
@@ -129,13 +179,19 @@ func VolumeDownHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "volume_down",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // GetMuteHandler level 0 to 10
 func GetMuteHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -143,13 +199,19 @@ func GetMuteHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_mute",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // SetMuteHandler state => on / off
 func SetMuteHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 	params["state"] = vars["state"]
@@ -158,12 +220,18 @@ func SetMuteHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_mute",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func ToggleMuteHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -171,12 +239,18 @@ func ToggleMuteHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "toggle_mute",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func GetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -184,13 +258,19 @@ func GetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "get_play_mode",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // SetPlayModeHandler repeat => on_all, on_one, off || shuffle => on, off
 func SetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 	params["repeat"] = vars["repeat"]
@@ -200,12 +280,18 @@ func SetPlayModeHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "set_play_mode",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func PlayNextHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -213,12 +299,18 @@ func PlayNextHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "play_next",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 func PlayPreviousHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPreviousResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["player_id"]
 
@@ -226,30 +318,30 @@ func PlayPreviousHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "player",
 		Command: "play_previous",
 	}
-	sendPlayerGroupMessageToHeosSystem(w, cmd, params, groups.HeosPlayerAnswer{})
+
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params)
+	if res != nil {
+
+		json.Unmarshal(res, &playPreviousResponse)
+		json.NewEncoder(w).Encode(playPreviousResponse)
+	}
 }
 
 // sendPlayerGroupMessageToHeosSystem takes input params from handler, writes message to heos and write the result to http.response
-func sendPlayerGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Command, params map[string]string, res groups.Response) {
+func sendPlayerGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Command, params map[string]string) []byte {
 	heos, err := GetConnectedHeos()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "No connected devices. Error %v:", err.Error())
-		return
+		return nil
 	}
 
 	response, err := heos.SendCmdToHeosSpeaker(cmd, params)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprintf(w, "Error while communicating with heos %v", err.Error())
-		return
+		return nil
 	}
-
-	//var msg res
-
-	json.Unmarshal(response, &res)
-
-	log.Infof("logging raw answer %s", response)
-	json.NewEncoder(w).Encode(res)
-
+	logger.HeosLogger.Debugf("logging raw answer %s", response)
+	return response
 }

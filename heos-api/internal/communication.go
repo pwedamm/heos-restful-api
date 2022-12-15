@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
+	"heos-restful-api/heos-api/logger"
 	"net"
 )
 
@@ -39,7 +39,7 @@ func (heos *Heos) Disconnect() error {
 // SendCmdToHeosSpeaker sends given command with parameters to the speaker
 func (heos *Heos) SendCmdToHeosSpeaker(cmd Command, params map[string]string) ([]byte, error) {
 
-	logrus.Info("sending: "+"heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
+	logger.HeosLogger.Info("sending: "+"heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
 
 	_, err := fmt.Fprintf(heos.conn, "heos://%s/%s?%s\r\n", cmd.Group, cmd.Command, paramsToStr(params))
 	if err != nil {

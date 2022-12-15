@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"heos-restful-api/heos-api/groups"
 	"heos-restful-api/heos-api/internal"
+	"heos-restful-api/heos-api/logger"
 	"net/http"
 )
 
@@ -96,7 +97,7 @@ func sendGroupGroupMessageToHeosSystem(w http.ResponseWriter, cmd internal.Comma
 
 	json.Unmarshal(response, &msg)
 
-	log.Infof("logging raw answer %s", response)
+	logger.HeosLogger.Infof("logging raw answer %s", response)
 	json.NewEncoder(w).Encode(msg)
 
 }

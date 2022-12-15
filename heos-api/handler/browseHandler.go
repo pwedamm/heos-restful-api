@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"encoding/json"
 	"github.com/gorilla/mux"
+	"heos-restful-api/heos-api/groups"
 	"heos-restful-api/heos-api/internal"
 	"net/http"
 )
@@ -9,6 +11,7 @@ import (
 func PlayPresetHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
+	var playPresetHandlerResponse groups.HeosPlayerAnswer
 	params := make(map[string]string)
 	params["pid"] = vars["pid"]
 	params["preset"] = vars["preset"]
@@ -17,5 +20,13 @@ func PlayPresetHandler(w http.ResponseWriter, req *http.Request) {
 		Group:   "browse",
 		Command: "play_preset",
 	}
+
+	res := sendPlayerGroupMessageToHeosSystem(w, cmd, params);
+	if res != nil {
+
+		json.Unmarshal(res, &playPresetHandlerResponse)
+		json.NewEncoder(w).Encode(playPresetHandlerResponse)
+	}
+
 	sendPlayerGroupMessageToHeosSystem(w, cmd, params)
 }

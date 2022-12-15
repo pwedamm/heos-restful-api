@@ -11,3 +11,7 @@ type Heos struct {
 func (heos *Heos) GetConnection() net.Conn {
 	return heos.conn
 }
+
+func (heos *Heos) GetHeosHost() string {
+	return heos.host
+}

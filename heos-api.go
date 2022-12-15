@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
+	heos_api "heos-restful-api/heos-api"
 	"heos-restful-api/heos-api/handler"
+	"heos-restful-api/heos-api/logger"
 	"net/http"
 	"time"
 )
 
-var log = logrus.New()
-
 func main() {
 
-	log.SetLevel(logrus.DebugLevel)
-
+	config, _ := heos_api.GetConfiguration()
+	logger.HeosLogger.SetLevel(config.GetLogLever())
+	handler.SetDefaultHeosIp(config.HeosIp)
 	// creating mux handler https://github.com/gorilla/mux
 	router := mux.NewRouter()
 	router.HandleFunc("/hello", hello)
@@ -84,20 +84,20 @@ func main() {
 	router.HandleFunc("/browse/play_preset/{pid}/{preset}", handler.PlayPresetHandler)
 
 	server := &http.Server{
-		Addr:         "0.0.0.0:8080",
+		Addr:         config.GetServerIp() + ":" + config.GetServerPort(),
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 30,
 		Handler:      router,
 	}
 
-	log.Infof("starting webserver on: %s.", server.Addr)
+	logger.HeosLogger.Infof("starting webserver on: %s.", server.Addr)
 	if err := server.ListenAndServe(); err != nil {
-		log.Error(err)
+		logger.HeosLogger.Error(err)
 	}
 }
 
 func hello(w http.ResponseWriter, req *http.Request) {
 
-	log.Debug("entered hello handler")
+	logger.HeosLogger.Debug("entered hello handler")
 	fmt.Fprintf(w, "hello\n")
 }
