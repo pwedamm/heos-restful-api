@@ -11,6 +11,8 @@ import (
 
 var globalHeos internal.Heos
 var defaultIp string
+var username string
+var password string
 
 func ConnectHandler(w http.ResponseWriter, req *http.Request) {
 
@@ -54,6 +56,11 @@ func GetConnectedHeos() (internal.Heos, error) {
 	if err == nil {
 		globalHeos = heos
 		logger.HeosLogger.Debugf("connected successfully to default client with ip %s", defaultIp)
+		logger.HeosLogger.Debugf("trying to login to heos account with username  %s", username)
+		err := heos.Login(username, password)
+		if err != nil {
+			logger.HeosLogger.Errorf("login failed!")
+		}
 		return heos, nil
 	}
 	return globalHeos, errors.New("client not connected")
@@ -61,6 +68,14 @@ func GetConnectedHeos() (internal.Heos, error) {
 
 func SetDefaultHeosIp(heosIp string) {
 	defaultIp = heosIp
+}
+
+func SetHeosUsername(mUsername string) {
+	username = mUsername
+}
+
+func SetHeosPassword(pw string) {
+	password = pw
 }
 
 // sendMessageToHeosSystem takes input params from handler, writes message to heos and write the result to http.response

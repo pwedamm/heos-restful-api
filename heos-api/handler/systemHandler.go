@@ -33,6 +33,9 @@ func AccountSignInHandler(w http.ResponseWriter, req *http.Request) {
 	params["un"] = vars["email"]
 	params["pw"] = vars["password"]
 
+	SetHeosUsername("email")
+	SetHeosPassword("password")
+
 	cmd := internal.Command{
 		Group:   "system",
 		Command: "sign_in",

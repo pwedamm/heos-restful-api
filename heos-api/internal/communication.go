@@ -31,6 +31,27 @@ func (heos *Heos) Connect() error {
 	return nil
 }
 
+func (heos *Heos) Login(username string, password string) error {
+
+	cmd := Command{
+		Group:   "system",
+		Command: "sign_in",
+	}
+
+	var params map[string]string
+	params["un"] = username
+	params["pw"] = password
+
+	res, err := heos.SendCmdToHeosSpeaker(cmd, params)
+	if err != nil {
+		logger.HeosLogger.Errorf("login failed with username %s", username)
+		return err
+	}
+
+	logger.HeosLogger.Infof("logged in successfully with username %s - %s", username, res)
+	return nil
+}
+
 // Disconnect disconnects from the speaker
 func (heos *Heos) Disconnect() error {
 	return heos.conn.Close()

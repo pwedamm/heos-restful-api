@@ -13,13 +13,16 @@ import (
 
 func main() {
 
+	// initialization
 	config, _ := heos_api.GetConfiguration()
 	logger.HeosLogger.SetLevel(config.GetLogLever())
 	handler.SetDefaultHeosIp(config.HeosIp)
+	handler.SetHeosPassword(config.Password)
+	handler.SetHeosUsername(config.Username)
 	// creating mux handler https://github.com/gorilla/mux
 	router := mux.NewRouter()
-	router.HandleFunc("/hello", hello)
 
+	router.HandleFunc("/hello", hello)
 	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		// an example API handler
 		json.NewEncoder(w).Encode(map[string]bool{"ok": true})

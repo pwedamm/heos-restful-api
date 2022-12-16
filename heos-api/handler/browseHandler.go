@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// PlayPresetHandler method is used to play radio stations triggered by knx buttons.
 func PlayPresetHandler(w http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
@@ -27,6 +28,4 @@ func PlayPresetHandler(w http.ResponseWriter, req *http.Request) {
 		json.Unmarshal(res, &playPresetHandlerResponse)
 		json.NewEncoder(w).Encode(playPresetHandlerResponse)
 	}
-
-	sendMessageToHeosSystem(w, cmd, params)
 }
